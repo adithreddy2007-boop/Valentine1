@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Valentine – Create Card</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>💝</text></svg>"/>
+  <style>
+    .step { display:none; }
+    .step.active { display:block; }
+    .sec-title { font-family:'Dancing Script',cursive; color:#c2185b; font-size:1.7rem; font-weight:700; margin-bottom:4px; }
+    .sec-sub { color:#f48fb1; font-size:0.85rem; margin-bottom:22px; }
+    .wish-box { background:linear-gradient(135deg,#fff0f5,#ffe4ec); border-radius:16px; padding:20px; border:1px solid #ffb6c1; margin-bottom:14px; width:100%; }
+    .wish-box label { font-family:'Dancing Script',cursive; color:#c2185b; font-size:1rem; font-weight:700; display:block; margin-bottom:8px; }
+    .wish-box textarea { width:100% !important; }
+    .photo-note { font-size:0.78rem; color:#ad1457; text-align:center; margin-top:6px; }
+    .correct-hint { font-size:0.7rem; color:#ad1457; margin-top:6px; display:block; }
+    .letter-wrap { position:relative; }
+    .use-tpl-btn { float:right; background:none; border:none; color:#c2185b; font-size:0.82rem; font-weight:700; text-decoration:underline; font-family:'Dancing Script',cursive; }
+    .letter-label { font-weight:700; font-size:0.9rem; color:#880e4f; display:block; margin-bottom:6px; }
+    .done-wrap { text-align:center; }
+    .done-wrap .big { font-size:56px; animation:pulse 1.5s infinite; display:block; margin-bottom:12px; }
+    .done-wrap h2 { font-family:'Dancing Script',cursive; color:#c2185b; font-size:1.8rem; margin-bottom:6px; }
+    .done-wrap p  { color:#ad1457; font-size:0.9rem; margin-bottom:20px; }
+    .link-display { background:#fff0f5; border:1.5px solid #f8bbd0; border-radius:14px; padding:16px 18px; word-break:break-all; font-family:'Dancing Script',cursive; color:#c2185b; font-size:0.95rem; margin-bottom:14px; }
+    .q-wrap { margin-bottom:20px; }
+  </style>
+</head>
+<body>
+<div class="hearts-bg"></div>
+<div class="page-wrap" style="justify-content:flex-start; padding-top:40px;">
+  <div class="card card-wide" style="position:relative;z-index:1;width:100%;">
+
+    <div class="step-bar" id="stepBar">
+      <div class="step-dot active" id="dot0"></div>
+      <div class="step-dot" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+      <div class="step-dot" id="dot4"></div>
+    </div>
+
+    <!-- STEP 0: Partner -->
+    <div class="step active" id="step0">
+      <div class="sec-title">💝 Partner Details</div>
+      <div class="sec-sub">Tell us about your special someone</div>
+      <div class="input-group">
+        <label>Their Name</label>
+        <input type="text" id="partnerName" placeholder="e.g. Priya"/>
+      </div>
+      <div class="input-group">
+        <label>Their Gender</label>
+        <div class="gender-options">
+          <div class="gender-btn" id="gHim" onclick="selectGender('him')">👦<span>Him</span></div>
+          <div class="gender-btn" id="gHer" onclick="selectGender('her')">👧<span>Her</span></div>
+        </div>
+      </div>
+      <div id="msg0"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="window.location.href='dashboard.html'">← Back</button>
+        <button class="btn-primary" onclick="next(0)">Next 💕</button>
+      </div>
+    </div>
+
+    <!-- STEP 1: Wishes -->
+    <div class="step" id="step1">
+      <div class="sec-title">💌 Your Wishes</div>
+      <div class="sec-sub">One short & sweet, one straight from the heart</div>
+      <div class="wish-box">
+        <label>🌸 Short & Sweet Wish</label>
+        <textarea id="wish1" placeholder="e.g. Wishing you all the love in the world! 💕" rows="4" style="width:100%; min-height:110px; font-size:1rem;"></textarea>
+      </div>
+      <div class="wish-box">
+        <label>💖 From the Heart</label>
+        <textarea id="wish2" placeholder="Write something deeper and meaningful..." rows="6" style="width:100%; min-height:150px; font-size:1rem;"></textarea>
+      </div>
+      <div id="msg1"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="prev(1)">← Back</button>
+        <button class="btn-primary" onclick="next(1)">Next 📸</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Photos -->
+    <div class="step" id="step2">
+      <div class="sec-title">📸 Your Memories</div>
+      <div class="sec-sub">Add up to 6 of your favourite photos together</div>
+      <div class="photo-grid" id="photoGrid"></div>
+      <p class="photo-note">Tap a slot to upload 💕 (at least 1 photo required)</p>
+      <div id="msg2"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="prev(2)">← Back</button>
+        <button class="btn-primary" onclick="next(2)">Next ❓</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Quiz -->
+    <div class="step" id="step3">
+      <div class="sec-title">❓ Love Quiz</div>
+      <div class="sec-sub">Create 3 fun questions — mark the correct answer with the radio button</div>
+      <div id="quizBuilder"></div>
+      <div id="msg3"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="prev(3)">← Back</button>
+        <button class="btn-primary" onclick="next(3)">Next ✉️</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Letter -->
+    <div class="step" id="step4">
+      <div style="margin-bottom:18px;">
+        <h2 style="font-family:'Dancing Script',cursive;color:#c2185b;font-size:1.8rem;font-weight:700;">A Promise To You 💌</h2>
+        <p style="color:#888;font-size:0.85rem;margin-top:2px;">Write a heartfelt letter or use our romantic template.</p>
+      </div>
+      <span class="letter-label">Your Letter</span>
+      <div class="letter-wrap">
+        <button class="use-tpl-btn" onclick="useTemplate()">Use Template</button>
+        <div class="input-group" style="margin-top:28px;">
+          <textarea id="letter" rows="14" placeholder="Write your heartfelt letter here..."></textarea>
+        </div>
+      </div>
+      <div id="msg4"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="prev(4)">← Back</button>
+        <button class="btn-primary" id="finishBtn" onclick="finish()">Finish 💝</button>
+      </div>
+    </div>
+
+    <!-- DONE -->
+    <div class="step" id="stepDone">
+      <div class="done-wrap">
+        <span class="big">💌</span>
+        <h2>Your Valentine is Ready!</h2>
+        <p>Share this link with your special someone 🌹</p>
+        <div class="link-display" id="genLink"></div>
+        <button class="btn-primary" id="copyBtn" onclick="copyLink()" style="width:auto;padding:12px 32px;">Copy Link 💕</button>
+        <br/><br/>
+        <button class="btn-secondary" onclick="window.location.href='dashboard.html'">← My Dashboard</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  import { initHearts } from '../js/hearts.js';
+  import { auth, db } from '../js/firebase-config.js';
+  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import { doc, setDoc, collection } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  initHearts();
+
+  let currentUser=null, selectedGender=null, photoFiles=[null,null,null,null,null,null], step=0;
+
+  onAuthStateChanged(auth, u=>{ if(!u){window.location.href='../index.html';return;} currentUser=u; });
+
+  // Gender
+  window.selectGender = g => {
+    selectedGender=g;
+    document.getElementById('gHim').classList.toggle('selected',g==='him');
+    document.getElementById('gHer').classList.toggle('selected',g==='her');
+  };
+
+  // Photo slots
+  const grid = document.getElementById('photoGrid');
+  for(let i=0;i<6;i++){
+    const s=document.createElement('div'); s.className='photo-slot';
+    s.innerHTML=`<span id="si${i}">📷</span><img id="sm${i}" style="display:none"/><input type="file" accept="image/*" onchange="addPhoto(${i},this)"/>`;
+    grid.appendChild(s);
+  }
+  // Compress image and return base64 string (no Storage needed — free!)
+  function imageToBase64(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const MAX = 800;
+          let w = img.width, h = img.height;
+          if (w > MAX || h > MAX) {
+            if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+            else       { w = Math.round(w * MAX / h); h = MAX; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.65));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  window.addPhoto = async (idx, inp) => {
+    const f = inp.files[0]; if (!f) return;
+    const base64 = await imageToBase64(f);
+    photoFiles[idx] = base64;
+    document.getElementById(`sm${idx}`).src = base64;
+    document.getElementById(`sm${idx}`).style.display = 'block';
+    document.getElementById(`si${idx}`).style.display = 'none';
+  };
+
+  // Quiz builder
+  const qb=document.getElementById('quizBuilder');
+  for(let q=0;q<3;q++){
+    const w=document.createElement('div'); w.className='quiz-question-card';
+    w.innerHTML=`<h4>Question ${q+1}</h4>
+      <div class="input-group"><input type="text" id="qT${q}" placeholder="e.g. Where did we first meet?"/></div>
+      <div class="quiz-options-grid">
+        ${[0,1,2,3].map(o=>`<div class="quiz-option-row"><input type="radio" name="ans${q}" value="${o}"/><input type="text" id="qO${q}${o}" placeholder="Option ${o+1}"/></div>`).join('')}
+      </div>
+      <span class="correct-hint">💡 Click the radio next to the correct answer</span>`;
+    qb.appendChild(w);
+  }
+
+  // Navigation
+  window.next=function(from){
+    const msg=document.getElementById(`msg${from}`); msg.innerHTML='';
+    if(from===0){
+      if(!document.getElementById('partnerName').value.trim()){msg.innerHTML='<div class="msg-error">Please enter their name.</div>';return;}
+      if(!selectedGender){msg.innerHTML='<div class="msg-error">Please select Him or Her.</div>';return;}
+    }
+    if(from===1){
+      if(!document.getElementById('wish1').value.trim()||!document.getElementById('wish2').value.trim()){msg.innerHTML='<div class="msg-error">Please write both wishes.</div>';return;}
+    }
+    if(from===2){
+      if(photoFiles.every(f=>!f)){msg.innerHTML='<div class="msg-error">Please upload at least 1 photo.</div>';return;}
+    }
+    if(from===3){
+      for(let q=0;q<3;q++){
+        if(!document.getElementById(`qT${q}`).value.trim()){msg.innerHTML=`<div class="msg-error">Please enter Question ${q+1}.</div>`;return;}
+        if([0,1,2,3].some(o=>!document.getElementById(`qO${q}${o}`).value.trim())){msg.innerHTML=`<div class="msg-error">Fill all 4 options for Question ${q+1}.</div>`;return;}
+        if(!document.querySelector(`input[name="ans${q}"]:checked`)){msg.innerHTML=`<div class="msg-error">Mark the correct answer for Question ${q+1}.</div>`;return;}
+      }
+    }
+    goTo(from+1);
+  };
+  window.prev=from=>goTo(from-1);
+
+  function goTo(n){
+    const cur = step<5?`step${step}`:'stepDone';
+    document.getElementById(cur).classList.remove('active');
+    if(step<5){ document.getElementById(`dot${step}`)?.classList.remove('active'); document.getElementById(`dot${step}`)?.classList.add('done'); }
+    const nxt = n<5?`step${n}`:'stepDone';
+    document.getElementById(nxt).classList.add('active');
+    if(n<5){ document.getElementById(`dot${n}`)?.classList.add('active'); document.getElementById(`dot${n}`)?.classList.remove('done'); }
+    step=n; window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  // Template
+  window.useTemplate=()=>{
+    const name=document.getElementById('partnerName').value.trim()||'you';
+    document.getElementById('letter').value=
+`Every moment we spend together feels like a page from a story I never want to end. You have a way of making the mundane feel magical just by being present in the world. When I look at you, I don't just see a partner — I see my entire future unfolding.
+
+Your kindness is a constant inspiration, pushing me to be a better person every day. I love the way you light up every room with so much grace and warmth. There is a peace I find with you that I haven't been able to find anywhere else.
+
+Thank you for choosing me, even on the days when life gets messy or complicated. You are my sanctuary, my compass, and my absolute favourite person to talk to. I cherish every small moment — every laugh, every glance, every time you hold my hand.
+
+I promise to always be your biggest fan and your most loyal, devoted person. No matter where we go, as long as I'm with you, I am exactly where I belong.
+
+I will choose you today, tomorrow, and every single morning that follows. Let's keep building this beautiful life together, one shared laugh and kiss at a time.
+
+I love you completely and entirely — now and for all the time we have left to share.
+
+Forever yours, with all my heart 💕`;
+  };
+
+  // Finish
+  window.finish=async()=>{
+    const letter=document.getElementById('letter').value.trim();
+    const msg=document.getElementById('msg4');
+    if(!letter){msg.innerHTML='<div class="msg-error">Please write your letter.</div>';return;}
+    const btn=document.getElementById('finishBtn');
+    btn.textContent='Saving... 💝'; btn.disabled=true; msg.innerHTML='';
+    try{
+      // Photos stored as base64 directly in Firestore (no Storage needed — 100% free)
+      const urls = photoFiles.map(f => f || null);
+      // Quiz
+      const quiz=[];
+      for(let q=0;q<3;q++){
+        quiz.push({
+          question: document.getElementById(`qT${q}`).value.trim(),
+          options: [0,1,2,3].map(o=>document.getElementById(`qO${q}${o}`).value.trim()),
+          correct: parseInt(document.querySelector(`input[name="ans${q}"]:checked`).value)
+        });
+      }
+      // Save
+      const cardRef=doc(collection(db,'valentines'));
+      await setDoc(cardRef,{
+        creatorUid: currentUser.uid,
+        partnerName: document.getElementById('partnerName').value.trim(),
+        partnerGender: selectedGender,
+        wish1: document.getElementById('wish1').value.trim(),
+        wish2: document.getElementById('wish2').value.trim(),
+        photos: urls, quiz, letter,
+        createdAt: new Date().toISOString()
+      });
+      const base=window.location.origin+window.location.pathname.replace('pages/create.html','');
+      window._link=`${base}pages/valentine.html?id=${cardRef.id}`;
+      document.getElementById('genLink').textContent=window._link;
+      goTo(5);
+    }catch(e){
+      msg.innerHTML=`<div class="msg-error">${e.message}</div>`;
+      btn.textContent='Finish 💝'; btn.disabled=false;
+    }
+  };
+
+  window.copyLink=()=>{
+    navigator.clipboard.writeText(window._link).then(()=>{
+      const b=document.getElementById('copyBtn'); b.textContent='Copied! ✓';
+      setTimeout(()=>b.textContent='Copy Link 💕',2000);
+    });
+  };
+</script>
+</body>
+</html>

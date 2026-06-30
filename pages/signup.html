@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Valentine – Sign Up</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>💝</text></svg>"/>
+</head>
+<body>
+<div class="hearts-bg"></div>
+<div class="page-wrap">
+  <div class="site-header">
+    <span class="emoji">🌹</span>
+    <h1>Wait Baby</h1>
+    <p>created by me, for you</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span class="icon">💕</span>
+      <h2>Join Hearts</h2>
+      <p>Create your secret account</p>
+    </div>
+    <div id="msg"></div>
+    <div class="input-group">
+      <label>Your Name</label>
+      <input type="text" id="username" placeholder="e.g. Aarav" autocomplete="name"/>
+    </div>
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="your@email.com" autocomplete="email"/>
+    </div>
+    <div class="input-group">
+      <label>Mobile Number</label>
+      <div class="phone-row">
+        <select id="countryCode">
+          <option value="+91">🇮🇳 +91</option>
+          <option value="+1">🇺🇸 +1</option>
+          <option value="+44">🇬🇧 +44</option>
+          <option value="+61">🇦🇺 +61</option>
+          <option value="+971">🇦🇪 +971</option>
+          <option value="+65">🇸🇬 +65</option>
+          <option value="+60">🇲🇾 +60</option>
+          <option value="+92">🇵🇰 +92</option>
+          <option value="+880">🇧🇩 +880</option>
+          <option value="+94">🇱🇰 +94</option>
+          <option value="+977">🇳🇵 +977</option>
+          <option value="+49">🇩🇪 +49</option>
+          <option value="+33">🇫🇷 +33</option>
+          <option value="+81">🇯🇵 +81</option>
+          <option value="+86">🇨🇳 +86</option>
+        </select>
+        <input type="tel" id="mobile" placeholder="9876543210" maxlength="15"/>
+      </div>
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Min 6 characters" autocomplete="new-password"/>
+    </div>
+    <div class="input-group">
+      <label>Confirm Password</label>
+      <input type="password" id="confirmPassword" placeholder="Repeat password" autocomplete="new-password"/>
+    </div>
+    <button class="btn-primary" id="signupBtn" onclick="handleSignup()">Create Account 🌹</button>
+    <div class="switch-link">Already have an account? <a href="../index.html">Login</a></div>
+
+    <div class="security-note">
+      <strong>🔐 Security tip:</strong> Please do <strong>not</strong> use your real Google or Gmail password here.
+      Create a unique password for this site only — this keeps your Google account safe and your Valentine secret secure.
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initHearts } from '../js/hearts.js';
+  import { auth, db } from '../js/firebase-config.js';
+  import { createUserWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  initHearts();
+  onAuthStateChanged(auth, u => { if(u) window.location.href='dashboard.html'; });
+
+  window.handleSignup = async function() {
+    const username    = document.getElementById('username').value.trim();
+    const email       = document.getElementById('email').value.trim();
+    const countryCode = document.getElementById('countryCode').value;
+    const mobile      = document.getElementById('mobile').value.trim();
+    const password    = document.getElementById('password').value;
+    const confirm     = document.getElementById('confirmPassword').value;
+    const msg = document.getElementById('msg');
+    const btn = document.getElementById('signupBtn');
+
+    if (!username||!email||!mobile||!password||!confirm) { msg.innerHTML='<div class="msg-error">Please fill in all fields.</div>'; return; }
+    if (password.length<6)      { msg.innerHTML='<div class="msg-error">Password must be at least 6 characters.</div>'; return; }
+    if (password!==confirm)     { msg.innerHTML='<div class="msg-error">Passwords do not match.</div>'; return; }
+    if (!/^\d{7,15}$/.test(mobile)) { msg.innerHTML='<div class="msg-error">Enter a valid mobile number (digits only).</div>'; return; }
+
+    btn.textContent='...'; btn.disabled=true; msg.innerHTML='';
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db,'users',cred.user.uid),{ username, email, mobile: countryCode+mobile, createdAt: new Date().toISOString() });
+      window.location.href='dashboard.html';
+    } catch(e) {
+      msg.innerHTML=`<div class="msg-error">${e.code==='auth/email-already-in-use'?'Email already registered.':e.message}</div>`;
+      btn.textContent='Create Account 🌹'; btn.disabled=false;
+    }
+  };
+</script>
+</body>
+</html>

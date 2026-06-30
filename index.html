@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="description" content="created by me for you"/>
+  <title>Valentine</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>💝</text></svg>"/>
+</head>
+<body>
+<div class="hearts-bg"></div>
+<div class="page-wrap">
+  <div class="site-header">
+    <span class="emoji">💝</span>
+    <h1>Wait Baby</h1>
+    <p>created by me, for you</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span class="icon">🔒</span>
+      <h2>Valentine Lock</h2>
+      <p>Enter password to unlock</p>
+    </div>
+    <div id="msg"></div>
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="your@email.com" autocomplete="email"/>
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="btn-primary" id="loginBtn" onclick="handleLogin()">Unlock 💕</button>
+    <div class="switch-link">Don't have an account? <a href="pages/signup.html">Sign up</a></div>
+
+    <div class="security-note">
+      <strong>🔐 Important:</strong> Please do <strong>not</strong> use your real Google or Gmail password here.
+      Create a separate, unique password for this site to keep your account safe.
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initHearts } from './js/hearts.js';
+  import { auth } from './js/firebase-config.js';
+  import { signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  initHearts();
+  onAuthStateChanged(auth, u => { if (u) window.location.href = 'pages/dashboard.html'; });
+
+  window.handleLogin = async function() {
+    const email = document.getElementById('email').value.trim();
+    const pass  = document.getElementById('password').value;
+    const msg   = document.getElementById('msg');
+    const btn   = document.getElementById('loginBtn');
+    if (!email || !pass) { msg.innerHTML='<div class="msg-error">Please fill in all fields.</div>'; return; }
+    btn.textContent='...'; btn.disabled=true; msg.innerHTML='';
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+      window.location.href = 'pages/dashboard.html';
+    } catch(e) {
+      msg.innerHTML=`<div class="msg-error">${e.code==='auth/invalid-credential'?'Wrong email or password.':e.message}</div>`;
+      btn.textContent='Unlock 💕'; btn.disabled=false;
+    }
+  };
+  document.getElementById('password').addEventListener('keydown', e=>{ if(e.key==='Enter') window.handleLogin(); });
+</script>
+</body>
+</html>
