@@ -3,12 +3,12 @@
 //  Firebase Console → Project Settings → Your Apps → Web (</>)
 // ============================================================
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyDqXQnqdRDa-5MOb2FptHMZEqfKGVAdpcA",
+  authDomain: "valentine-app-36ffa.firebaseapp.com",
+  projectId: "valentine-app-36ffa",
+  storageBucket: "valentine-app-36ffa.firebasestorage.app",
+  messagingSenderId: "801271045141",
+  appId: "1:801271045141:web:a8fd39f9f15b492c9b421c"
 };
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
